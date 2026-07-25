@@ -1,0 +1,257 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model LocalProject {
+  id                String             @id @default("local")
+  name              String             @default("Local project")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  bookmarks         Bookmark[]
+  comments          Comment[]
+  scoreConfigs      ScoreConfig[]
+  scores            Score[]
+  tombstones        Tombstone[]
+  dashboards        Dashboard[]
+  media             Media[]
+  llmConnections    LlmConnection[]
+  defaultEvalModel  DefaultEvalModel?
+  evalTemplates     EvalTemplate[]
+  evalConfigurations EvalConfiguration[]
+  evalRuns          EvalRun[]
+}
+
+model Bookmark {
+  id         String   @id @default(cuid())
+  projectId  String   @default("local")
+  targetType String
+  targetId   String
+  createdAt  DateTime @default(now())
+  project    LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, targetType, targetId])
+  @@index([projectId, targetType])
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  projectId  String   @default("local")
+  targetType String
+  targetId   String
+  content    String
+  authorId   String   @default("local-user")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  project    LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, targetType, targetId])
+}
+
+model ScoreConfig {
+  id          String   @id @default(cuid())
+  projectId   String   @default("local")
+  name        String
+  dataType    String   @default("NUMERIC")
+  description String?
+  categories  String?
+  minValue    Float?
+  maxValue    Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, name])
+}
+
+model Score {
+  id            String   @id @default(cuid())
+  projectId     String   @default("local")
+  traceId       String?
+  observationId String?
+  sessionId     String?
+  name          String
+  value         Float?
+  stringValue   String?
+  dataType      String   @default("NUMERIC")
+  source        String   @default("ANNOTATION")
+  comment       String?
+  authorId      String   @default("local-user")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  evalRunItemId String?  @unique
+  project       LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  evalRunItem   EvalRunItem? @relation(fields: [evalRunItemId], references: [id], onDelete: SetNull)
+
+  @@index([projectId, traceId])
+  @@index([projectId, observationId])
+  @@index([projectId, sessionId])
+  @@index([projectId, name])
+}
+
+model Tombstone {
+  id         String   @id @default(cuid())
+  projectId  String   @default("local")
+  targetType String
+  targetId   String
+  createdAt  DateTime @default(now())
+  project    LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, targetType, targetId])
+}
+
+model Dashboard {
+  id          String   @id @default(cuid())
+  projectId   String   @default("local")
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  widgets     DashboardWidget[]
+
+  @@unique([projectId, name])
+}
+
+model DashboardWidget {
+  id          String   @id @default(cuid())
+  dashboardId String
+  title       String
+  metric      String
+  chartType   String   @default("NUMBER")
+  config      String   @default("{}")
+  position    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  dashboard   Dashboard @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+
+  @@index([dashboardId, position])
+}
+
+model Media {
+  id         String   @id @default(cuid())
+  projectId  String   @default("local")
+  targetType String
+  targetId   String
+  fileName   String
+  mimeType   String
+  filePath   String
+  size       Int
+  createdAt  DateTime @default(now())
+  project    LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, targetType, targetId])
+}
+
+model LlmConnection {
+  id              String   @id @default(cuid())
+  projectId       String   @default("local")
+  name            String
+  provider        String
+  adapter         String
+  encryptedApiKey String
+  baseUrl         String?
+  encryptedHeaders String?
+  config          String   @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  project         LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  defaultFor      DefaultEvalModel?
+  evalTemplates   EvalTemplate[]
+
+  @@unique([projectId, name])
+}
+
+model DefaultEvalModel {
+  projectId    String   @id @default("local")
+  connectionId String   @unique
+  model        String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  project      LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  connection   LlmConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+}
+
+model EvalTemplate {
+  id              String   @id @default(cuid())
+  projectId       String   @default("local")
+  name            String
+  version         Int      @default(1)
+  prompt          String
+  scoreName       String
+  dataType        String   @default("NUMERIC")
+  outputSchema    String   @default("{}")
+  model           String?
+  connectionId    String?
+  modelParameters String   @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  project         LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  connection      LlmConnection? @relation(fields: [connectionId], references: [id], onDelete: SetNull)
+  configurations  EvalConfiguration[]
+
+  @@unique([projectId, name, version])
+  @@index([projectId, name])
+}
+
+model EvalConfiguration {
+  id              String   @id @default(cuid())
+  projectId       String   @default("local")
+  name            String
+  templateId      String
+  targetType      String
+  filter          String   @default("{}")
+  variableMapping String   @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  project         LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  template        EvalTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  runs            EvalRun[]
+
+  @@unique([projectId, name])
+  @@index([projectId, targetType])
+}
+
+model EvalRun {
+  id              String   @id @default(cuid())
+  projectId       String   @default("local")
+  configurationId String
+  status          String   @default("PENDING")
+  requestedCount  Int
+  completedCount  Int      @default(0)
+  failedCount     Int      @default(0)
+  cancelledAt     DateTime?
+  startedAt       DateTime?
+  finishedAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  project         LocalProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  configuration   EvalConfiguration @relation(fields: [configurationId], references: [id], onDelete: Cascade)
+  items           EvalRunItem[]
+
+  @@index([projectId, status, createdAt])
+}
+
+model EvalRunItem {
+  id             String   @id @default(cuid())
+  runId          String
+  targetType     String
+  targetId       String
+  targetSnapshot String
+  status         String   @default("PENDING")
+  attempt        Int      @default(0)
+  error          String?
+  startedAt      DateTime?
+  finishedAt     DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  run            EvalRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  score          Score?
+
+  @@unique([runId, targetType, targetId])
+  @@index([status, createdAt])
+}

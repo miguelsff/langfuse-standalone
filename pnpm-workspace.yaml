@@ -1,6 +1,7 @@
 packages:
   # include packages in subfolders (e.g. apps/ and packages/)
   - "web"
+  - "web-ui"
   - "worker"
   - "packages/**"
   - "ee"

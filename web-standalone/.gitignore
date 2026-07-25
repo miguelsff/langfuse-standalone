@@ -3,3 +3,14 @@
 
 *storybook.log
 storybook-static
+
+.next/
+node_modules/
+.env
+data/*.db
+data/*.db-journal
+data/*.db-shm
+data/*.db-wal
+data/media/*
+!data/media/.gitkeep
+!.env.example

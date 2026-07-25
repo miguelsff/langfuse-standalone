@@ -11,8 +11,9 @@ import {
 } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 
-const repoRoot = resolve(new URL("../..", import.meta.url).pathname);
+const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
 const sourcePath = resolve(repoRoot, ".agents/config.json");
 const config = JSON.parse(readFileSync(sourcePath, "utf8"));
 const servers = config.mcpServers;
@@ -219,13 +220,39 @@ const managedDirectoryEntries = [
   },
 ];
 
-const isMatchingSymlink = (path, target) => {
+const formatRelativeTarget = (path, target) =>
+  relative(dirname(path), target).replaceAll("\\", "/");
+
+const isMatchingLinkShim = (path, target) => {
   const stats = lstatSync(path);
-  if (!stats.isSymbolicLink()) {
-    return false;
+  if (stats.isSymbolicLink()) {
+    return resolve(dirname(path), readlinkSync(path)) === target;
   }
 
-  return resolve(dirname(path), readlinkSync(path)) === target;
+  return (
+    stats.isFile() &&
+    readFileSync(path, "utf8") === formatRelativeTarget(path, target)
+  );
+};
+
+const createLinkShim = (path, target) => {
+  const targetIsDirectory = lstatSync(target).isDirectory();
+  const relativeTarget = formatRelativeTarget(path, target);
+
+  if (process.platform === "win32" && !targetIsDirectory) {
+    writeFileSync(path, relativeTarget);
+    return;
+  }
+
+  symlinkSync(
+    process.platform === "win32" ? target : relativeTarget,
+    path,
+    process.platform === "win32"
+      ? "junction"
+      : targetIsDirectory
+        ? "dir"
+        : "file",
+  );
 };
 
 const findUnexpectedChildren = ({ path, expectedChildren }) => {
@@ -282,7 +309,7 @@ for (const output of fileOutputs) {
 for (const output of symlinkOutputs) {
   if (checkMode) {
     try {
-      if (!isMatchingSymlink(output.path, output.target)) {
+      if (!isMatchingLinkShim(output.path, output.target)) {
         hasMismatch = true;
         console.error(`Out of sync symlink: ${output.path}`);
       }
@@ -302,7 +329,7 @@ for (const output of symlinkOutputs) {
   mkdirSync(dirname(output.path), { recursive: true });
 
   try {
-    if (isMatchingSymlink(output.path, output.target)) {
+    if (isMatchingLinkShim(output.path, output.target)) {
       continue;
     }
   } catch (error) {
@@ -312,11 +339,7 @@ for (const output of symlinkOutputs) {
   }
 
   rmSync(output.path, { force: true, recursive: true });
-  symlinkSync(
-    relative(dirname(output.path), output.target),
-    output.path,
-    lstatSync(output.target).isDirectory() ? "dir" : "file",
-  );
+  createLinkShim(output.path, output.target);
   console.log(`Linked ${output.path}`);
 }
 

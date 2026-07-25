@@ -1,0 +1,370 @@
+@import "../src/styles/globals.css";
+
+@source "../pages";
+@source "../components";
+
+@layer base {
+  body {
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer components {
+  .app-layout {
+    @apply flex h-dvh w-full overflow-hidden bg-background;
+  }
+
+  .sidebar {
+    @apply relative z-40 hidden h-full w-[11.5rem] shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground md:flex;
+  }
+
+  .sidebar-header {
+    @apply flex min-h-14 items-center justify-between px-3 py-2;
+  }
+
+  .brand {
+    @apply flex min-h-9 items-center;
+  }
+
+  .mobile-close {
+    @apply hidden rounded-md p-2 text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+  }
+
+  .sidebar-project {
+    @apply mx-2 flex min-h-12 items-center gap-2 border-y px-1.5 py-2;
+  }
+
+  .project-avatar,
+  .user-avatar {
+    @apply grid size-7 shrink-0 place-items-center rounded-md bg-primary text-xs font-bold text-primary-foreground;
+  }
+
+  .project-copy {
+    @apply flex min-w-0 flex-col;
+  }
+
+  .project-copy strong {
+    @apply truncate text-sm text-primary;
+  }
+
+  .project-copy small {
+    @apply truncate text-xs text-muted-foreground;
+  }
+
+  .sidebar-content {
+    @apply min-h-0 flex-1 overflow-y-auto py-1;
+  }
+
+  .nav-group {
+    @apply px-2 py-1;
+  }
+
+  .nav-group-label {
+    @apply mb-1 px-2 text-xs text-muted-foreground;
+  }
+
+  .nav-menu {
+    @apply grid gap-0.5;
+  }
+
+  .nav-link,
+  .sidebar-action {
+    @apply flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-sm text-sidebar-foreground outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring;
+  }
+
+  .nav-link.active {
+    @apply bg-sidebar-accent font-bold text-sidebar-accent-foreground;
+  }
+
+  .nav-link svg,
+  .sidebar-action svg {
+    @apply shrink-0;
+  }
+
+  .sidebar-secondary {
+    @apply grid gap-0.5 border-t p-2;
+  }
+
+  .local-user {
+    @apply mt-1 flex min-h-10 items-center gap-2 rounded-md px-1.5 py-1;
+  }
+
+  .sidebar-rail {
+    @apply absolute top-1/2 -right-2 z-50 hidden size-5 -translate-y-1/2 place-items-center rounded-full border bg-background text-muted-foreground shadow-xs hover:text-foreground md:grid;
+  }
+
+  .sidebar-collapsed .sidebar {
+    @apply w-12;
+  }
+
+  .sidebar-collapsed .sidebar-header,
+  .sidebar-collapsed .sidebar-project {
+    @apply justify-center px-1;
+  }
+
+  .sidebar-collapsed .nav-group,
+  .sidebar-collapsed .sidebar-secondary {
+    @apply px-1.5;
+  }
+
+  .sidebar-collapsed .nav-link,
+  .sidebar-collapsed .sidebar-action {
+    @apply justify-center px-0;
+  }
+
+  .main-content {
+    @apply h-full min-w-0 flex-1 overflow-y-auto bg-background p-3;
+  }
+
+  .mobile-menu-trigger {
+    @apply fixed top-0 right-0 left-0 z-30 flex h-11 items-center gap-3 border-b bg-background px-3 md:hidden;
+  }
+
+  .sidebar-backdrop {
+    @apply fixed inset-0 z-40 bg-black/50 md:hidden;
+  }
+
+  .page-header {
+    @apply sticky -top-3 z-30 -mx-3 -mt-3 mb-3 border-b bg-background shadow-xs;
+  }
+
+  .page-header-context {
+    @apply flex min-h-11 items-center border-b px-3 py-1.5 text-sm text-muted-foreground;
+  }
+
+  .page-header-title-row {
+    @apply flex min-h-11 flex-wrap items-center justify-between gap-2 px-3 py-1;
+  }
+
+  .page-header-title {
+    @apply flex min-w-0 items-center gap-1;
+  }
+
+  .page-tabs {
+    @apply flex min-h-8 items-end gap-1 px-2;
+  }
+
+  .page-tab {
+    @apply relative inline-flex h-8 items-center px-2 text-sm text-muted-foreground hover:text-foreground;
+  }
+
+  .page-tab.active {
+    @apply font-bold text-primary;
+  }
+
+  .page-tab.active::after {
+    @apply absolute right-2 bottom-0 left-2 h-0.5 bg-primary-accent content-[''];
+  }
+
+  .page-header h1 {
+    @apply line-clamp-1 text-lg font-bold text-primary;
+  }
+
+  .page-help {
+    @apply inline-flex text-muted-foreground;
+  }
+
+  .actions,
+  .inline-form {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .button {
+    @apply inline-flex min-h-8 w-auto items-center justify-center rounded-md border border-primary bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground shadow-xs outline-none hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .button.secondary {
+    @apply border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .button.danger {
+    @apply border-destructive bg-destructive text-destructive-foreground;
+  }
+
+  .text-button {
+    @apply inline-flex w-auto items-center border-0 bg-transparent p-0 text-sm text-link hover:text-link-hover;
+  }
+
+  .danger-text {
+    @apply text-destructive hover:text-destructive/80;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  textarea,
+  select {
+    @apply w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-xs outline-none placeholder:text-foreground-tertiary focus-visible:ring-2 focus-visible:ring-ring;
+  }
+
+  textarea {
+    @apply resize-y;
+  }
+
+  input[type="checkbox"] {
+    @apply size-4 rounded border-control-border text-control-fill focus:ring-ring;
+  }
+
+  .card,
+  .annotation-panel,
+  .table-wrap {
+    @apply rounded-lg border bg-card text-card-foreground;
+  }
+
+  .card,
+  .annotation-panel {
+    @apply p-4;
+  }
+
+  .card h2,
+  .annotation-panel h2 {
+    @apply mb-3 text-base font-bold text-primary;
+  }
+
+  .card h3,
+  .annotation-panel h3 {
+    @apply mb-2 text-sm font-bold text-primary;
+  }
+
+  .metrics-grid {
+    @apply grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-3;
+  }
+
+  .metric strong {
+    @apply mt-1 block text-2xl font-bold text-primary;
+  }
+
+  .table-wrap {
+    @apply overflow-x-auto;
+  }
+
+  table {
+    @apply w-full border-collapse text-sm;
+  }
+
+  th,
+  td {
+    @apply border-b px-3 py-2.5 text-left align-top;
+  }
+
+  th {
+    @apply bg-muted/40 text-xs font-bold text-muted-foreground;
+  }
+
+  tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  tbody tr:hover {
+    @apply bg-muted/40;
+  }
+
+  .link {
+    @apply font-bold text-link hover:text-link-hover hover:underline;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-md border bg-muted px-1.5 py-0.5 text-xs text-muted-foreground;
+  }
+
+  .badge.error {
+    @apply border-light-red bg-light-red text-dark-red;
+  }
+
+  .muted,
+  small {
+    @apply text-muted-foreground;
+  }
+
+  .stack {
+    @apply grid gap-3;
+  }
+
+  .stack.compact {
+    @apply mt-3 gap-2;
+  }
+
+  .filters,
+  .form-grid {
+    @apply mb-3 grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] items-end gap-3;
+  }
+
+  .form-grid label,
+  .stack label,
+  .filters label {
+    @apply grid gap-1 text-sm text-muted-foreground;
+  }
+
+  .detail-grid {
+    @apply grid grid-cols-1 gap-3 lg:grid-cols-2;
+  }
+
+  .detail-grid .wide {
+    @apply lg:col-span-2;
+  }
+
+  .json-value {
+    @apply mt-2 max-h-[420px] overflow-auto whitespace-pre-wrap break-words rounded-md bg-surface-code p-3 font-mono text-xs text-foreground;
+  }
+
+  .annotation-panel {
+    @apply mt-4;
+  }
+
+  .section-heading {
+    @apply flex flex-wrap items-start justify-between gap-3;
+  }
+
+  .annotation-columns {
+    @apply grid grid-cols-1 gap-5 lg:grid-cols-2;
+  }
+
+  .annotation-item {
+    @apply grid gap-1 rounded-md border bg-muted/40 p-3;
+  }
+
+  .annotation-item p {
+    @apply m-0;
+  }
+
+  .empty,
+  .error-box {
+    @apply rounded-md border p-4 text-sm text-muted-foreground;
+  }
+
+  .error-box {
+    @apply border-light-red bg-light-red text-dark-red;
+  }
+
+  .pagination {
+    @apply mt-3 flex flex-wrap items-center justify-end gap-2 text-sm text-muted-foreground;
+  }
+
+  @media (max-width: 767px) {
+    .app-layout {
+      @apply pt-11;
+    }
+
+    .sidebar.mobile-open {
+      @apply fixed top-0 bottom-0 left-0 z-50 flex w-64;
+    }
+
+    .sidebar.mobile-open .mobile-close {
+      @apply inline-flex;
+    }
+
+    .main-content {
+      @apply p-3;
+    }
+  }
+}

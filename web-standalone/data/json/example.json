@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "traces": [
+    {
+      "id": "trace-example",
+      "name": "Standalone example",
+      "timestamp": "2026-07-24T12:00:00.000Z",
+      "userId": "local-user",
+      "sessionId": "session-example",
+      "tags": ["example", "standalone"],
+      "input": { "question": "What is standalone mode?" },
+      "output": { "answer": "A local web process using JSON and SQLite." },
+      "level": "DEFAULT",
+      "durationMs": 820,
+      "totalCost": 0.0012
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation-example",
+      "traceId": "trace-example",
+      "type": "GENERATION",
+      "name": "Example generation",
+      "startTime": "2026-07-24T12:00:00.100Z",
+      "endTime": "2026-07-24T12:00:00.800Z",
+      "model": "example-model",
+      "input": { "question": "What is standalone mode?" },
+      "output": { "answer": "A local web process using JSON and SQLite." },
+      "level": "DEFAULT",
+      "usage": { "input": 8, "output": 11, "total": 19 },
+      "cost": { "total": 0.0012 }
+    }
+  ],
+  "sessions": [
+    {
+      "id": "session-example",
+      "createdAt": "2026-07-24T12:00:00.000Z",
+      "userId": "local-user",
+      "metadata": { "source": "example" }
+    }
+  ]
+}

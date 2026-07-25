@@ -1,0 +1,56 @@
+{
+  "extends": "@repo/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "declaration": false,
+    "declarationMap": false,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+    "types": ["node", "vitest/globals", "vitest/importMeta", "@testing-library/jest-dom"]
+  },
+  "exclude": [
+    "node_modules",
+    "sdk",
+    "src/server",
+    "src/server/**/*",
+    "src/pages/api",
+    "src/__tests__",
+    "src/__e2e__",
+    "src/**/*.clienttest.ts",
+    "src/**/*.clienttest.tsx",
+    "src/**/server",
+    "src/**/server/**/*",
+    "src/features/**/server",
+    "src/features/**/server/**/*",
+    "src/ee/features/sfdc-sync/scripts/**/*"
+  ],
+  "include": [
+    "**/*.cjs",
+    "**/*.mjs",
+    ".eslintrc.js",
+    ".next/types/**/*.ts",
+    "next-env.d.ts",
+    "next-env.d.ts",
+    "src/components/**/*",
+    "src/ee/**/*",
+    "src/features/**/*",
+    "src/hooks/**/*",
+    "src/mock-data/**/*",
+    "src/pages/**/*",
+    "src/polyfills/**/*",
+    "src/styles/**/*",
+    "src/utils/**/*",
+    "types/global.d.ts",
+    "types/**/*.d.ts",
+    ".next-check/types/**/*.ts"
+  ]
+}
