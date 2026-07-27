@@ -35,7 +35,7 @@
     "@ag-ui/mastra": "1.1.1",
     "@ai-sdk/amazon-bedrock": "4.0.81",
     "@appsignal/opentelemetry-instrumentation-bullmq": "^0.8.0",
-    "@astral-sh/ruff-wasm-web": "0.15.13",
+    "@astral-sh/ruff-wasm-web": "0.15.22",
     "@aws-crypto/sha256-browser": "^5.2.0",
     "@aws-sdk/client-lambda-microvms": "catalog:",
     "@aws-sdk/credential-providers": "catalog:",
