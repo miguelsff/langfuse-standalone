@@ -159,7 +159,7 @@
     "@types/nodemailer": "^8.0.1",
     "@types/react": "19.2.14",
     "dotenv-cli": "^7.4.4",
-    "eslint": "^9.39.2",
+    "eslint": "^10.7.0",
     "prisma": "^6.19.3",
     "tsx": "^4.20.5",
     "typescript": "catalog:",
